@@ -1,0 +1,733 @@
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8e8f2">
+  <meta name="description" content="중국어 소통이 가능한 한국 현지 여행 파트너, 지진유의 여행 코디네이션 포트폴리오입니다.">
+  <title>지진유 | 한국 현지 여행 파트너</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
+
+    :root {
+      --ink: #493e55;
+      --muted: #766b7d;
+      --pink: #f8e8f2;
+      --pink-deep: #f1cfe2;
+      --lavender: #eee9fb;
+      --lavender-deep: #dcd2f4;
+      --cream: #fffaf6;
+      --white: #fffdfd;
+      --line: rgba(104, 81, 121, .13);
+      --shadow: 0 18px 50px rgba(104, 81, 121, .10);
+      --round: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 86px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: 'Gowun Dodum', 'Malgun Gothic', sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .brand, .eyebrow, .pill, .button {
+      font-family: 'Jua', 'Gowun Dodum', sans-serif;
+      font-weight: 400;
+      letter-spacing: -.02em;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px max(5vw, 22px);
+      background: rgba(255, 250, 246, .84);
+      border-bottom: 1px solid rgba(104, 81, 121, .08);
+      backdrop-filter: blur(16px);
+    }
+    .brand { font-size: 1.35rem; white-space: nowrap; }
+    .brand span { color: #bd8cb8; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2.2vw, 28px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a {
+      color: #71667a;
+      font-size: .91rem;
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .nav a:hover, .nav a:focus-visible { color: #b46fa7; }
+
+    .section { position: relative; padding: 100px max(6vw, 24px); overflow: hidden; }
+    .section-inner { width: min(1120px, 100%); margin: 0 auto; position: relative; z-index: 1; }
+    .section-pink { background: var(--pink); }
+    .section-lavender { background: var(--lavender); }
+    .section-cream { background: var(--cream); }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: #a56e9c;
+      font-size: .98rem;
+    }
+    .eyebrow::before { content: '✦'; color: #c79ac1; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 18px; font-size: clamp(3.2rem, 8vw, 6.4rem); line-height: 1.08; }
+    h2 { margin-bottom: 16px; font-size: clamp(2.1rem, 4.4vw, 3.25rem); line-height: 1.2; }
+    h3 { font-size: 1.45rem; line-height: 1.35; }
+    .section-lead { max-width: 690px; color: var(--muted); font-size: 1.06rem; }
+    .small-note { color: #8b7f91; font-size: .88rem; }
+
+    .hero {
+      min-height: 690px;
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(circle at 10% 18%, rgba(255,255,255,.85) 0 5%, transparent 5.5%),
+        radial-gradient(circle at 86% 20%, rgba(255,255,255,.6) 0 8%, transparent 8.5%),
+        linear-gradient(130deg, #f9eaf3 0%, #eee9fb 58%, #f8e8f2 100%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      align-items: center;
+      gap: clamp(30px, 6vw, 80px);
+    }
+    .hero-copy { max-width: 690px; }
+    .hero-kicker {
+      display: inline-block;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      color: #8d6891;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 999px;
+      font-size: .9rem;
+    }
+    .hero h1 span { color: #b47bab; }
+    .type-line {
+      min-height: 2.1em;
+      margin-bottom: 28px;
+      color: #685a76;
+      font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+    }
+    .type-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      margin-left: 4px;
+      vertical-align: -.15em;
+      background: #ad79aa;
+      animation: blink .8s steps(2, start) infinite;
+    }
+    @keyframes blink { to { visibility: hidden; } }
+    .hero-desc { max-width: 580px; margin-bottom: 30px; color: #75697e; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 12px 22px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .22s ease, background .22s ease, color .22s ease, box-shadow .22s ease;
+    }
+    .button:hover { transform: translateY(-3px); }
+    .button-primary { color: white; background: #b982b5; box-shadow: 0 9px 22px rgba(185,130,181,.25); }
+    .button-primary:hover { background: #956baf; box-shadow: 0 12px 26px rgba(149,107,175,.3); }
+    .button-secondary { color: #886b91; background: rgba(255,255,255,.65); border-color: rgba(166,128,174,.25); }
+    .button-secondary:hover { color: white; background: #b99bcf; }
+    .photo-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 390px;
+      padding: 24px;
+      color: #8b8990;
+      text-align: center;
+      background: linear-gradient(145deg, #e5e3e7, #d8d6dc);
+      border: 1px dashed #aaa5b0;
+      border-radius: 42px;
+      box-shadow: var(--shadow);
+    }
+    .photo-placeholder .placeholder-inner { max-width: 220px; }
+    .placeholder-icon { display: block; margin-bottom: 10px; font-size: 2.2rem; opacity: .7; }
+    .hero-photo { transform: rotate(2deg); }
+    .hero-photo::after {
+      content: 'YOUR PHOTO';
+      position: absolute;
+      right: -18px;
+      bottom: 24px;
+      padding: 10px 18px;
+      color: #8d6d91;
+      background: #fffaf7;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(80,60,90,.1);
+      font: .8rem 'Jua', sans-serif;
+      letter-spacing: .08em;
+    }
+
+    .floating-note {
+      display: inline-block;
+      padding: 10px 16px;
+      color: #92729a;
+      background: rgba(255,255,255,.7);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(110,80,120,.08);
+      transform: rotate(-4deg);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: .75fr 1.25fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .about-mark {
+      display: grid;
+      place-items: center;
+      min-height: 300px;
+      color: #a17ba9;
+      background: linear-gradient(145deg, #fff8fc, #e8def8);
+      border-radius: 38px;
+      font-size: 5rem;
+      box-shadow: var(--shadow);
+    }
+    .about-text { color: #6e6477; font-size: 1.05rem; }
+    .info-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .pill {
+      padding: 8px 14px;
+      color: #8c6a91;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(178,143,184,.18);
+      border-radius: 999px;
+      font-size: .9rem;
+    }
+
+    .marquee-wrap {
+      margin: 48px calc(-1 * max(6vw, 24px)) 0;
+      padding: 17px 0;
+      overflow: hidden;
+      background: rgba(255,255,255,.58);
+      border-top: 1px solid rgba(155,123,171,.12);
+      border-bottom: 1px solid rgba(155,123,171,.12);
+      transform: rotate(-1deg);
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 28px;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee-track span {
+      color: #9b78a4;
+      font: 1.2rem 'Jua', sans-serif;
+      white-space: nowrap;
+    }
+    .marquee-track span::after { content: ' ✦ '; padding-left: 28px; color: #d0a5ca; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    .strength-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 42px;
+    }
+    .soft-card {
+      height: 100%;
+      padding: 30px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: var(--round);
+      box-shadow: 0 12px 34px rgba(100,78,122,.07);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .soft-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .card-emoji { display: block; margin-bottom: 18px; font-size: 2rem; }
+    .soft-card h3 { margin-bottom: 12px; }
+    .soft-card p { margin-bottom: 0; color: var(--muted); }
+
+    .slider-shell { position: relative; margin-top: 42px; }
+    .slider-track {
+      display: grid;
+      grid-auto-columns: minmax(290px, 1fr);
+      grid-auto-flow: column;
+      gap: 20px;
+      overflow-x: auto;
+      padding: 8px 3px 22px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      scrollbar-color: #c5a8d0 transparent;
+    }
+    .experience-card {
+      min-height: 355px;
+      padding: 28px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 26px;
+      box-shadow: 0 12px 30px rgba(94,76,116,.07);
+      scroll-snap-align: start;
+    }
+    .experience-card .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .number {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      color: #946e9c;
+      background: #f3e8f7;
+      border-radius: 14px;
+      font: 1.1rem 'Jua', sans-serif;
+    }
+    .period {
+      color: #a17ca2;
+      font-size: .82rem;
+      white-space: nowrap;
+    }
+    .experience-card h3 { margin-bottom: 10px; }
+    .role { margin-bottom: 18px; color: #a274a2; font-size: .93rem; }
+    .detail-label { display: block; margin: 13px 0 4px; color: #8c6b92; font: .95rem 'Jua', sans-serif; }
+    .experience-card p { margin-bottom: 0; color: #756b7d; font-size: .93rem; }
+    .slider-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+    .arrow-button {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      color: #8c6b97;
+      background: #fff;
+      border: 1px solid #e4d7eb;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .arrow-button:hover { color: #fff; background: #ad86b7; }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 42px;
+    }
+    .work-card { overflow: hidden; padding: 0; }
+    .work-card .photo-placeholder {
+      min-height: 190px;
+      margin: 14px 14px 0;
+      border-radius: 20px;
+      box-shadow: none;
+    }
+    .work-content { padding: 24px; }
+    .work-year {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 5px 12px;
+      color: #98739d;
+      background: #f5eaf6;
+      border-radius: 999px;
+      font: .9rem 'Jua', sans-serif;
+    }
+    .work-content h3 { margin-bottom: 12px; }
+    .work-content p { margin-bottom: 12px; color: var(--muted); font-size: .94rem; }
+    .work-content p:last-child { margin-bottom: 0; }
+
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+      margin-top: 38px;
+    }
+    .style-panel {
+      padding: 34px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 28px;
+    }
+    .style-panel p { color: #706579; }
+    .style-list { display: flex; flex-wrap: wrap; gap: 9px; }
+    .style-list span {
+      padding: 8px 13px;
+      color: #8e6c98;
+      background: #f8eff8;
+      border-radius: 999px;
+      font-size: .9rem;
+    }
+
+    .contact-section {
+      background: linear-gradient(135deg, #f5e7f2, #eae5fa 70%, #f9edf4);
+    }
+    .contact-card {
+      padding: clamp(30px, 6vw, 64px);
+      text-align: center;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 38px;
+      box-shadow: var(--shadow);
+    }
+    .contact-card .section-lead { margin: 0 auto 28px; }
+    .email-link {
+      display: inline-block;
+      margin: 8px 0 22px;
+      color: #a56fa1;
+      font: clamp(1.05rem, 2.4vw, 1.4rem) 'Jua', sans-serif;
+      overflow-wrap: anywhere;
+    }
+    .contact-details { margin: 0 auto 24px; color: #776c80; }
+    .footer {
+      padding: 26px 20px;
+      color: #8b8092;
+      text-align: center;
+      background: #fffaf7;
+      font-size: .86rem;
+    }
+
+    .star-field {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      color: rgba(255,255,255,.95);
+      text-shadow: 0 0 9px rgba(188,151,202,.55);
+      animation: twinkle var(--duration, 5s) ease-in-out var(--delay, 0s) infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: .15; transform: scale(.7) rotate(0deg); }
+      50% { opacity: .9; transform: scale(1.2) rotate(35deg); }
+    }
+
+    @media (max-width: 850px) {
+      .hero-grid { grid-template-columns: 1fr .8fr; gap: 28px; }
+      .photo-placeholder { min-height: 310px; }
+      .strength-grid, .work-grid { grid-template-columns: 1fr 1fr; }
+      .strength-grid .soft-card:last-child, .work-grid .work-card:last-child { grid-column: 1 / -1; }
+      .about-grid { gap: 30px; }
+    }
+    @media (max-width: 640px) {
+      .site-header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 12px 20px; }
+      .brand { font-size: 1.2rem; }
+      .nav { width: 100%; gap: 20px; padding-bottom: 3px; }
+      .nav a { font-size: .86rem; }
+      .section { padding: 76px 22px; }
+      .hero { min-height: auto; padding-top: 68px; }
+      .hero-grid, .about-grid, .style-grid { grid-template-columns: 1fr; }
+      .hero-photo { width: min(82%, 340px); min-height: 300px; margin: 12px auto 0; }
+      .hero-desc { font-size: .98rem; }
+      .about-mark { min-height: 190px; font-size: 3.8rem; }
+      .strength-grid, .work-grid { grid-template-columns: 1fr; }
+      .strength-grid .soft-card:last-child, .work-grid .work-card:last-child { grid-column: auto; }
+      .soft-card { padding: 25px; }
+      .slider-track { grid-auto-columns: minmax(82vw, 1fr); }
+      .experience-card { min-height: 0; }
+      .work-card .photo-placeholder { min-height: 170px; }
+      .style-panel { padding: 26px; }
+      .contact-card { border-radius: 28px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="star-field" id="starField" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="처음으로">JINYU <span>✦</span></a>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="#about">소개</a>
+      <a href="#strengths">강점</a>
+      <a href="#experience">경험</a>
+      <a href="#works">대표 작품</a>
+      <a href="#style">작업 스타일</a>
+      <a href="#contact">문의하기</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section hero" id="home">
+      <div class="section-inner hero-grid">
+        <div class="hero-copy">
+          <div class="hero-kicker">한국 여행을 더 편안하고 특별하게 ✿</div>
+          <h1>안녕하세요,<br><span>지진유</span>입니다.</h1>
+          <p class="type-line"><span id="typedText"></span><span class="type-cursor" aria-hidden="true"></span></p>
+          <p class="hero-desc">중국어 소통부터 여행 코스 기획, 현지 예약 지원까지. 한국을 여행하는 중국어권 여행객의 든든한 현지 파트너가 되겠습니다.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#contact">여행 상담 문의하기 ↗</a>
+            <a class="button button-secondary" href="#works">작업 살펴보기</a>
+          </div>
+        </div>
+        <div class="photo-placeholder hero-photo" role="img" aria-label="프로필 사진을 넣을 자리">
+          <div class="placeholder-inner">
+            <span class="placeholder-icon">☁</span>
+            <strong>프로필 사진 자리</strong><br>
+            <span class="small-note">원하는 사진으로 교체해 주세요</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-cream" id="about">
+      <div class="section-inner about-grid">
+        <div>
+          <span class="eyebrow">ABOUT ME</span>
+          <div class="about-mark" aria-hidden="true">♡</div>
+          <div class="info-pills">
+            <span class="pill">컴퓨터공학과 · 2학년</span>
+            <span class="pill">활동 분야 · 가이드</span>
+            <span class="pill">한국어 · 중국어 상담</span>
+          </div>
+        </div>
+        <div>
+          <h2>여행자의 시선으로,<br>현지의 매력을 전합니다.</h2>
+          <p class="about-text">저는 한국의 다양한 문화와 여행지를 경험하고 소개하는 것을 좋아합니다. 한국 여행 콘텐츠 제작과 홍보 업무를 경험했으며, 부산을 중심으로 여행 코스와 관광 정보를 정리해 왔습니다. 이러한 경험을 바탕으로 중국인 여행객들에게 편안하고 만족스러운 한국 여행을 제공하고 싶습니다.</p>
+          <div class="floating-note">여행의 작은 순간까지 세심하게 ✧</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-lavender" id="strengths">
+      <div class="section-inner">
+        <span class="eyebrow">MY STRENGTHS</span>
+        <h2>여행을 더 편리하게 만드는 강점</h2>
+        <p class="section-lead">여행객의 입장에서 필요한 정보를 살피고, 취향과 일정에 맞춰 세심하게 연결합니다.</p>
+
+        <div class="strength-grid">
+          <article class="soft-card">
+            <span class="card-emoji">🧭</span>
+            <h3>고객 맞춤형 여행 일정 기획</h3>
+            <p>여행객의 취향과 요구사항을 파악하고, 목적에 맞는 효율적인 여행 코스를 구성할 수 있습니다.</p>
+          </article>
+          <article class="soft-card">
+            <span class="card-emoji">💬</span>
+            <h3>원활한 중국어 소통 및 고객 응대</h3>
+            <p>중국어로 여행객과 원활하게 소통하며, 필요한 정보를 정확하고 친절하게 전달할 수 있습니다.</p>
+          </article>
+          <article class="soft-card">
+            <span class="card-emoji">📍</span>
+            <h3>현지 정보 수집 및 일정 조율</h3>
+            <p>부산을 중심으로 관광지, 교통, 맛집 등 현지 정보를 조사하고 여행 일정에 맞게 조율할 수 있습니다.</p>
+          </article>
+        </div>
+      </div>
+      <div class="marquee-wrap" aria-label="강점 키워드가 흐르는 영역">
+        <div class="marquee-track">
+          <span>맞춤형 일정 기획</span><span>중국어 소통</span><span>현지 정보 조사</span><span>예약 지원</span><span>유연한 일정 조율</span><span>세심한 고객 응대</span>
+          <span>맞춤형 일정 기획</span><span>중국어 소통</span><span>현지 정보 조사</span><span>예약 지원</span><span>유연한 일정 조율</span><span>세심한 고객 응대</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-pink" id="experience">
+      <div class="section-inner">
+        <span class="eyebrow">EXPERIENCE</span>
+        <h2>경험과 활동</h2>
+        <p class="section-lead">여행 기획부터 현지 예약, 콘텐츠 홍보까지 한국 여행에 필요한 여러 과정을 경험했습니다.</p>
+
+        <div class="slider-shell">
+          <div class="slider-track" id="experienceTrack" tabindex="0" aria-label="경험 카드 슬라이드">
+            <article class="experience-card">
+              <div class="card-top"><span class="number">01</span><span class="period">기간 정보 미기재</span></div>
+              <h3>맞춤형 한국 여행 일정 기획 및 현지 서비스</h3>
+              <div class="role">역할 · 중국 관광객 대상 프라이빗 여행 코디네이터</div>
+              <span class="detail-label">한 일</span>
+              <p>여행객의 취향, 예산 및 일정에 맞춰 맞춤형 여행 코스를 기획하고, 관광 명소, 맛집, 사진 명소 및 교통 정보를 제공하며 필요에 따라 현지 여행 동행 서비스를 지원했습니다.</p>
+              <span class="detail-label">결과</span>
+              <p>여행객의 개별적인 요구에 맞춘 한국 여행 일정 구성 및 현지 맞춤형 서비스를 제공했습니다.</p>
+            </article>
+            <article class="experience-card">
+              <div class="card-top"><span class="number">02</span><span class="period">기간 정보 미기재</span></div>
+              <h3>한국 현지 예약 및 여행 편의 서비스 지원</h3>
+              <div class="role">역할 · 현지 예약 및 여행 서비스 코디네이터</div>
+              <span class="detail-label">한 일</span>
+              <p>호텔, 헤어·메이크업 샵, 피부관리실, 레스토랑 등 여행 관련 시설의 예약 문의 및 예약을 지원하고, 중국어와 한국어를 활용해 현지 업체와 소통하며 일정을 조율했습니다.</p>
+              <span class="detail-label">결과</span>
+              <p>중국어권 관광객의 현지 예약 절차를 지원하고 편리한 한국 여행을 위한 서비스를 제공했습니다.</p>
+            </article>
+            <article class="experience-card">
+              <div class="card-top"><span class="number">03</span><span class="period">기간 정보 미기재</span></div>
+              <h3>한국 여행 콘텐츠 제작 및 SNS 홍보</h3>
+              <div class="role">역할 · 여행 콘텐츠 제작 및 SNS 홍보 지원</div>
+              <span class="detail-label">한 일</span>
+              <p>중국인 관광객을 대상으로 샤오홍슈(小红书)에 한국 여행 정보를 게시하고, 관광 명소, 맛집 및 여행 상품을 소개하는 콘텐츠와 영상을 제작했습니다.</p>
+              <span class="detail-label">결과</span>
+              <p>중국어권 관광객을 대상으로 한 한국 여행 콘텐츠 제작 및 온라인 홍보 경험을 확보했습니다.</p>
+            </article>
+          </div>
+          <div class="slider-controls">
+            <button class="arrow-button" type="button" id="slidePrev" aria-label="이전 경험 보기">←</button>
+            <button class="arrow-button" type="button" id="slideNext" aria-label="다음 경험 보기">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-cream" id="works">
+      <div class="section-inner">
+        <span class="eyebrow">SELECTED WORKS</span>
+        <h2>대표 작품</h2>
+        <p class="section-lead">기획과 현지 지원, 콘텐츠 제작 경험을 세 가지 주제로 정리했습니다.</p>
+        <div class="work-grid">
+          <article class="soft-card work-card">
+            <div class="photo-placeholder" role="img" aria-label="부산 경주 여행 코스 사진 자리">
+              <div class="placeholder-inner"><span class="placeholder-icon">🖼</span><strong>작품 사진 자리</strong><br><span class="small-note">부산·경주 여행 코스</span></div>
+            </div>
+            <div class="work-content">
+              <span class="work-year">2026</span>
+              <h3>부산·경주 맞춤형 여행 코스 기획</h3>
+              <p><strong>작업 내용</strong><br>여행객의 취향과 일정에 맞춘 관광 명소, 맛집, 사진 명소 및 교통 동선 조사와 일정 구성</p>
+              <p><strong>결과</strong><br>맞춤형 여행 코스 기획 경험</p>
+            </div>
+          </article>
+          <article class="soft-card work-card">
+            <div class="photo-placeholder" role="img" aria-label="현지 여행 서비스 사진 자리">
+              <div class="placeholder-inner"><span class="placeholder-icon">🖼</span><strong>작품 사진 자리</strong><br><span class="small-note">현지 여행 서비스</span></div>
+            </div>
+            <div class="work-content">
+              <span class="work-year">2026</span>
+              <h3>중국·대만 관광객 대상 현지 여행 서비스</h3>
+              <p><strong>작업 내용</strong><br>중국어 상담, 현지 관광 안내, 호텔·레스토랑·뷰티샵 예약 지원 및 일정 조율</p>
+              <p><strong>결과</strong><br>중국어권 관광객 대상 현지 여행 서비스 경험</p>
+            </div>
+          </article>
+          <article class="soft-card work-card">
+            <div class="photo-placeholder" role="img" aria-label="한국 여행 콘텐츠 사진 자리">
+              <div class="placeholder-inner"><span class="placeholder-icon">🖼</span><strong>작품 사진 자리</strong><br><span class="small-note">여행 콘텐츠·SNS 홍보</span></div>
+            </div>
+            <div class="work-content">
+              <span class="work-year">2026</span>
+              <h3>한국 여행 콘텐츠 제작 및 홍보</h3>
+              <p><strong>작업 내용</strong><br>샤오홍슈를 활용한 한국 관광지, 맛집 및 여행 정보 콘텐츠 제작과 홍보</p>
+              <p><strong>결과</strong><br>중국어권 관광객 대상 여행 정보 전달 및 콘텐츠 제작 경험</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-lavender" id="style">
+      <div class="section-inner">
+        <span class="eyebrow">WORKING STYLE</span>
+        <h2>꼼꼼하게 조사하고,<br>유연하게 조율합니다.</h2>
+        <p class="section-lead">여행객이 안심하고 여행을 준비할 수 있도록 소통과 정보의 정확성을 중요하게 생각합니다.</p>
+        <div class="style-grid">
+          <div class="style-panel">
+            <span class="card-emoji">🌷</span>
+            <h3>제가 중요하게 생각하는 것</h3>
+            <p>고객의 취향과 예산을 고려한 맞춤형 여행 계획, 꼼꼼한 현지 정보 조사, 유연한 일정 조율 및 세심한 고객 소통을 중요하게 생각합니다.</p>
+            <div class="style-list">
+              <span>맞춤형 계획</span><span>꼼꼼한 조사</span><span>유연한 조율</span><span>세심한 소통</span>
+            </div>
+          </div>
+          <div class="style-panel">
+            <span class="card-emoji">🧸</span>
+            <h3>상담 및 의뢰 안내</h3>
+            <p>이메일로 여행 일정, 인원, 예산 및 희망 서비스를 보내 주시면 상담 후 맞춤형 여행 계획과 예약 지원을 안내해 드립니다.</p>
+            <p class="small-note">중국어 및 한국어 상담이 가능합니다.</p>
+            <a class="button button-secondary" href="#contact">의뢰 방법 확인하기</a>
+          </div>
+        </div>
+        <p class="small-note" style="margin-top:18px;">사용 도구: 별도 기재 없음</p>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contact">
+      <div class="section-inner">
+        <div class="contact-card">
+          <span class="eyebrow">LET'S TALK</span>
+          <h2>함께 좋은 여행을 만들어 볼까요?</h2>
+          <p class="section-lead">여행 일정과 필요한 서비스를 알려 주세요. 내용을 확인한 뒤 맞춤형 여행 계획 및 예약 지원에 대해 안내해 드리겠습니다.</p>
+          <p class="contact-details">여행 일정 · 인원 · 예산 · 희망 서비스를 이메일로 보내 주세요.<br>한국어 및 중국어 상담 가능</p>
+          <a class="email-link" href="mailto:jinqiuji888@gmail.com">jinqiuji888@gmail.com</a><br>
+          <a class="button button-primary" href="mailto:jinqiuji888@gmail.com?subject=%ED%95%9C%EA%B5%AD%20%EC%97%AC%ED%96%89%20%EC%83%81%EB%8B%B4%20%EB%AC%B8%EC%9D%98&body=%EC%97%AC%ED%96%89%20%EC%9D%BC%EC%A0%95%3A%0A%EC%9D%B8%EC%9B%90%3A%0A%EC%98%88%EC%82%B0%3A%0A%ED%9D%AC%EB%A7%9D%20%EC%84%9C%EB%B9%84%EC%8A%A4%3A%0A%EC%97%B0%EB%9D%BD%20%EA%B0%80%EB%8A%A5%ED%95%9C%20%EC%96%B8%EC%96%B4%3A">이메일로 상담 요청하기 ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© 2026 JINYU · 한국 현지 여행 파트너</footer>
+
+  <script>
+    // 한 줄 소개 타자 효과
+    const tagline = '중국어 소통이 가능한 한국 현지 여행 파트너';
+    const typedText = document.getElementById('typedText');
+    let typeIndex = 0;
+    function typeNext() {
+      if (typeIndex <= tagline.length) {
+        typedText.textContent = tagline.slice(0, typeIndex);
+        typeIndex += 1;
+        window.setTimeout(typeNext, 85);
+      }
+    }
+    typeNext();
+
+    // 배경의 작은 별 생성
+    const starField = document.getElementById('starField');
+    for (let i = 0; i < 34; i += 1) {
+      const star = document.createElement('span');
+      star.className = 'star';
+      star.textContent = i % 3 === 0 ? '✦' : '·';
+      star.style.left = `${(i * 37 + 11) % 100}%`;
+      star.style.top = `${(i * 53 + 7) % 100}%`;
+      star.style.fontSize = `${8 + (i % 4) * 4}px`;
+      star.style.setProperty('--duration', `${4 + (i % 5)}s`);
+      star.style.setProperty('--delay', `${(i % 7) * -0.7}s`);
+      starField.appendChild(star);
+    }
+
+    // 경험 카드 슬라이드 버튼
+    const track = document.getElementById('experienceTrack');
+    document.getElementById('slidePrev').addEventListener('click', () => {
+      track.scrollBy({ left: -track.clientWidth * 0.88, behavior: 'smooth' });
+    });
+    document.getElementById('slideNext').addEventListener('click', () => {
+      track.scrollBy({ left: track.clientWidth * 0.88, behavior: 'smooth' });
+    });
+
+    // 메뉴 클릭 시 부드럽게 이동
+    document.querySelectorAll('.nav a, a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const targetId = link.getAttribute('href');
+        if (targetId && targetId.length > 1) {
+          const target = document.querySelector(targetId);
+          if (target) {
+            event.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', targetId);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+'''
+
+path = Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(f"생성 완료: {path} ({path.stat().st_size:,} bytes)")
